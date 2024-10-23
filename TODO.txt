@@ -1,0 +1,49 @@
+TODO :
+======
+
+import file.csv 
+
+    methode : taguer lignes inexistentes dans file import 
+
+    import full : 
+        . save : insert to my_user_save (avec une col date_yyyy_mm_dd_HH_MM_SS_MS)
+        . delete from my_user 
+        . insert into my_user 
+
+    import incremental :
+        . save : insert to my_user_save (avec une col date_yyyy_mm_dd_HH_MM_SS_MS)
+        . si email exist : update cols 
+            sinon : insert 
+
+
+ecran table_save :
+    recherche multi-cols 
+    restore line 
+
+
+-----------------
+
+develop the backend 
+    java postgre sur azure ?
+    node js. bdd Mongo, Palteforme Vercel (ou autre gratuite). 
+
+
+=============================================
+DONE
+----
+
+    refaire l'affichage plus correct 
+
+    refaire l'import en tenant compte des noms de colonnes du fichier import et l'ordre des noms de colonnes de la table 
+
+    mettre tout ce qui concerne les cols de la table en haut
+
+table qui affiche les données de la table MyUser 
+
+faire un filtre sur les cols 
+
+export vers un file.csv 
+
+--------------
+
+

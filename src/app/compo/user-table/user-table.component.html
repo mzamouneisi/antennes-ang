@@ -1,0 +1,134 @@
+<div *ngIf="authService.isLoggedIn()">
+    <div class="button_container">
+        <button (click)="showPanelExport = !showPanelExport" class="button_export" >
+            Exporter
+        </button>
+        <div class="panel_flotant export_positions" *ngIf="showPanelExport" >
+           <!--  <h3>Exporter en format:</h3> -->
+             <div style="width: 100%;"> <button style="float: right;" (click)="showPanelExport=false">X</button> </div>
+            <label>
+                <input type="radio" name="exportType" [(ngModel)]="exportType" value="csv">
+                CSV
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="exportType" [(ngModel)]="exportType" value="xlsx">
+                XLSX
+            </label>
+            <br>
+
+            <button (click)="export()">Exporter</button>
+        </div>
+
+        <!-- <br> -->
+
+        <button (click)="showPanelImport = !showPanelImport">
+            Importer
+        </button>
+
+        <div class="panel_flotant import_positions" *ngIf="showPanelImport">
+            <!-- <h3>Importer en mode: </h3> -->
+            <div style="width: 100%;"> <button style="float: right;" (click)="showPanelImport=false">X</button> </div>
+            <div>
+                <label>
+                    incrémental
+                    <input type="radio" name="modeIncremental" [(ngModel)]="modeIncremental" [value]="true">
+                </label>
+                <br>
+                <label>
+                    complet
+                    <input type="radio" name="modeIncremental" [(ngModel)]="modeIncremental" [value]="false">
+                </label>
+            </div>
+
+            <br>
+
+            <!-- Section pour importer le fichier -->
+            <div>
+                <label for="fileInput">Importer fichier CSV ou Excel :</label>
+                <input type="file" (change)="onFileChange($event); showPanelImport=false" id="fileInput" accept=".csv, .xlsx" />
+            </div>
+
+        </div>
+
+    </div>
+    <table class="table-container">
+        <div> Table Users : <b>{{users.length}}</b> elements.</div>
+        <thead>
+            <tr>
+                <th>
+                    Name<br>
+                    <input type="text" [(ngModel)]="nameFilter" placeholder="Filtrer par name">
+                </th>
+                <th>
+                    Email<br>
+                    <input type="text" [(ngModel)]="emailFilter" placeholder="Filtrer par email">
+                </th>
+                <th>
+                    Password<br>
+                    <input type="text" [(ngModel)]="passwordFilter" placeholder="Filtrer par password">
+                </th>
+                <th>
+                    Âge<br>
+                    <input type="text" [(ngModel)]="ageFilter" placeholder="Filtrer par âge">
+                </th>
+                <th>
+                    Date de naissance<br>
+                    <input type="text" [(ngModel)]="dateNaissFilter" placeholder="Filtrer par date">
+                </th>
+                <th>
+                    Profile<br>
+                    <input type="text" [(ngModel)]="profileFilter" placeholder="Filtrer par profile">
+                </th>
+                <th *ngIf="showActions()">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="tbody-container">
+            <tr *ngFor="let user of filteredUsers; let i = index">
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password }}</td>
+                <td>{{ user.age }}</td>
+                <td>{{ user.dateNaiss }}</td>
+                <td>{{ user.profile }}</td>
+                <td *ngIf="showActions()">
+                    <button (click)="editUser(i)">Modif</button>
+                    <button (click)="deleteUser(i)">Suppr</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<div class="table-form" *ngIf="authService.isLoggedIn() && showActions() && showFormEdit() ">
+    <div class="form-entete">
+        <div class="right">
+            <button (click)="closeFormEdit()" >X</button>
+        </div>
+    </div>
+    <form (ngSubmit)="saveUser()">
+        <input type="text" [(ngModel)]="currentUser.name" name="name" placeholder="Name" required>
+        <input type="email" [(ngModel)]="currentUser.email" name="email" placeholder="Email" required>
+        <!-- <input type="password" [(ngModel)]="currentUser.password" name="password" placeholder="password" required> -->
+        <input type="number" [(ngModel)]="currentUser.age" name="age" placeholder="Âge" required>
+        <input type="date" [(ngModel)]="currentUser.dateNaiss" name="dateNaiss" required>
+        <br>
+
+        <!-- Sélecteur de profil -->
+        <select [(ngModel)]="currentUser.profile" name="profile" required>
+            <option value="ADMIN">ADMIN</option>
+            <option value="USER">USER</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">{{ editingIndex !== null ? 'Modifier utilisateur' : 'Ajouter utilisateur' }}</button>
+        <button (click)="initUser()" >Clear</button>
+        <!-- {{editingIndex}} -->
+    </form>
+    <!-- <button (click)="test()" >test</button>
+    {{currentUser?.id}} -->
+
+</div>

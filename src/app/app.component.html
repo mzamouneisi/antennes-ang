@@ -1,0 +1,45 @@
+<div class="panel_menu"  >
+  <div class="left">
+    <button (click)="router.navigate(['/'])">Acceuil</button>
+
+    <button *ngIf="userConnected; else loginButton"
+      (click)="showInfosUserConnected = !showInfosUserConnected">
+      {{ userConnected?.email }}
+    </button>
+    <ng-template #loginButton>
+      <h3>Se Loguer : </h3>
+     <!-- <a routerLink="/">Se loguer</a> -->
+    </ng-template>
+  </div>
+
+  <div class="right" *ngIf="authService.isLoggedIn()">
+    <button  (click)="btn_users_clicked()" class="btn_users" >
+      Users
+    </button>
+    <button  (click)="btn_users_filter_excel_clicked()" class="btn_users_filter_excel" >
+      Users Filter Excel 
+    </button>
+  </div>
+</div>
+
+<hr>
+
+<nav>
+  <div *ngIf="showInfosUserConnected" class="infos_login">
+    <div>
+      <h3>
+        {{userConnected?.name}} : 
+        {{userConnected?.profile}}
+      </h3>
+    </div>
+    <hr>
+    <button (click)="logout()">Logout</button>
+  </div>
+</nav>
+
+
+
+
+
+<!-- Ce router-outlet affichera les composants routés -->
+<router-outlet></router-outlet>

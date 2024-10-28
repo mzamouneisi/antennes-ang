@@ -1,28 +1,27 @@
-<div class="panel_menu"  >
+<div class="panel_menu">
   <div class="left">
     <button (click)="router.navigate(['/'])">Acceuil</button>
 
-    <button *ngIf="userConnected; else loginButton"
-      (click)="showInfosUserConnected = !showInfosUserConnected">
+    <button *ngIf="userConnected; else loginButton" (click)="showInfosUserConnected = !showInfosUserConnected">
       {{ userConnected?.email }}
     </button>
     <ng-template #loginButton>
       <h3>Se Loguer : </h3>
-     <!-- <a routerLink="/">Se loguer</a> -->
+      <!-- <a routerLink="/">Se loguer</a> -->
     </ng-template>
     <!-- list choix API_URL -->
-    <select [(ngModel)]="shareService.API_URL" name="API_URL" required>
+    <!-- <select [(ngModel)]="shareService.API_URL" name="API_URL" required>
       <option value="{{shareService.API_URL_AZURE}}">AZURE</option>
       <option value="{{shareService.API_URL_RENDER}}">RENDER</option>
-  </select>
+    </select> -->
   </div>
 
   <div class="right" *ngIf="authService.isLoggedIn()">
-    <button  (click)="btn_users_clicked()" class="btn_users" >
+    <button (click)="btn_users_clicked()" class="btn_users">
       Users
     </button>
-    <button  (click)="btn_users_filter_excel_clicked()" class="btn_users_filter_excel" >
-      Users Filter Excel 
+    <button (click)="btn_users_filter_excel_clicked()" class="btn_users_filter_excel">
+      Users Filter Excel
     </button>
   </div>
 </div>
@@ -33,7 +32,7 @@
   <div *ngIf="showInfosUserConnected" class="infos_login">
     <div>
       <h3>
-        {{userConnected?.name}} : 
+        {{userConnected?.name}} :
         {{userConnected?.profile}}
       </h3>
     </div>

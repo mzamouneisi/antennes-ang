@@ -6,7 +6,7 @@ import { MyUserService } from '../../service/my-user.service';
 import { AuthService } from '../config/auth.service';
 
 import { MatDialog } from '@angular/material/dialog';
-import { UtilService } from 'src/app/service/share-service';
+import { UtilService } from 'src/app/utils/utils-service';
 import { ConfirmDialogComponent } from '../util/confirm-dialog/confirm-dialog.component';
 
 const tableHeaders = ['name', 'email', 'password', 'age', 'dateNaiss', 'profile'];
@@ -21,7 +21,7 @@ export class UserTableComponent implements OnInit {
   modeIncremental: boolean = true;
   userConnected = this.authService.userConnected
 
-  constructor(private myService: MyUserService, public authService: AuthService, private dialog: MatDialog, private util: UtilService) {
+  constructor(private myService: MyUserService, public authService: AuthService, private dialog: MatDialog, public util: UtilService) {
     this.userConnected = this.authService.getUserConnected()
   }
 
@@ -111,6 +111,9 @@ export class UserTableComponent implements OnInit {
     this.isShowForm = true
     this.editingIndex = index;
     this.currentUser = { ...this.filteredUsers[index] };  // Cloner les données de l'utilisateur sélectionné
+    if (this.currentUser.dateNaiss) {
+      this.currentUser.dateNaiss = new Date(this.currentUser.dateNaiss).toISOString().split('T')[0];
+    }
   }
 
   initUser() {
@@ -159,6 +162,10 @@ export class UserTableComponent implements OnInit {
 
     if (this.editingIndex !== null) {
       // Mettre à jour l'utilisateur existant
+      if(this.currentUser.dateNaiss  ) {
+        this.currentUser.dateNaiss = new Date(this.currentUser.dateNaiss).toISOString()
+      }
+      console.log("this.currentUser", this.currentUser)
       this.filteredUsers[this.editingIndex] = { ...this.currentUser };
       let i = this.editingIndex
       this.myService.save(this.currentUser).subscribe(data => {

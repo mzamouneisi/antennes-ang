@@ -64,8 +64,15 @@ table th {
 /* Limiter la hauteur du tbody et ajouter l'ascenseur */
 tbody {
     display: block;
-    max-height: 200px;
-    overflow-y: auto;
+
+    resize: vertical; /* Permet seulement le redimensionnement vertical */
+    overflow: auto; /* Ajoute un défilement si le contenu dépasse */
+    min-height: 100px; /* Hauteur minimale */
+    max-height: 300px; /* Hauteur maximale */ 
+    /* width: 100%;  */
+    padding: 10px;
+    border: 1px solid #333;
+    background-color: #f9f9f9;
 }
 
 table thead,
@@ -200,6 +207,17 @@ table tbody tr:hover {
     /* Alignement du texte à gauche */
 
 }
+
+.resizable-vertical {
+    resize: vertical; /* Permet seulement le redimensionnement vertical */
+    overflow: auto; /* Ajoute un défilement si le contenu dépasse */
+    min-height: 100px; /* Hauteur minimale */
+    max-height: 500px; /* Hauteur maximale */
+    width: 100%; /* Largeur fixe */
+    padding: 10px;
+    border: 1px solid #333;
+    background-color: #f9f9f9;
+  }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

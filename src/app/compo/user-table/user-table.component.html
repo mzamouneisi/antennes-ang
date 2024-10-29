@@ -83,13 +83,13 @@
                 <th *ngIf="showActions()">Actions</th>
             </tr>
         </thead>
-        <tbody class="tbody-container">
+        <tbody>
             <tr *ngFor="let user of filteredUsers; let i = index">
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.password }}</td>
                 <td>{{ user.age }}</td>
-                <td>{{ user.dateNaiss }}</td>
+                <td>{{ user.dateNaiss | date: 'dd/MM/yyyy' }}</td>
                 <td>{{ user.profile }}</td>
                 <td *ngIf="showActions()">
                     <button (click)="editUser(i)">Modif</button>

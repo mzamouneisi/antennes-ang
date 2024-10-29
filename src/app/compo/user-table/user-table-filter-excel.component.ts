@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { saveAs } from 'file-saver';
+import { UtilService } from 'src/app/utils/utils-service';
 import { MyUser } from '../../data/my-user.model';
 import { MyUserService } from '../../service/my-user.service';
 import { AuthService } from '../config/auth.service';
@@ -28,7 +29,7 @@ export class UserTableFilterExcelComponent {
   selectedDateNaissFilter: string = '';
   selectedProfileFilter: string = '';
 
-  constructor(private userService: MyUserService, public authService: AuthService) { }
+  constructor(private userService: MyUserService, public authService: AuthService, public util : UtilService) { }
 
   currentUser: MyUser = {id : null, name: '', email: '', password: '', age: 0, dateNaiss: '', profile: 'USER', isCryptPass : false };
   editingIndex: number | null = null;

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UtilService } from '../../service/share-service';
+import { UtilService } from '../../utils/utils-service';
 import { AuthService } from '../config/auth.service';
 
 @Component({

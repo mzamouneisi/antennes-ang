@@ -4,7 +4,7 @@ export interface MyUser {
     email: string; // Email unique
     password: string; // Mot de passe ajouté
     age: number;
-    dateNaiss: string;
+    dateNaiss: string; // Utilisation d'une chaîne de type 'yyyy/MM/dd'
     profile: string;  // ADMIN ou USER
     isCryptPass : boolean ;
 }

@@ -1,0 +1,827 @@
+<div class="button_container">
+    <button (click)="showPanelExport = !showPanelExport" class="button_export" >
+        Exporter
+    </button>
+    <div class="panel_flotant export_positions" *ngIf="showPanelExport" >
+       <!--  <h3>Exporter en format:</h3> -->
+         <div style="width: 100%;"> <button style="float: right;" (click)="showPanelExport=false">X</button> </div>
+        <label>
+            <input type="radio" name="exportType" [(ngModel)]="exportType" value="csv">
+            CSV
+        </label>
+        <br>
+        <label>
+            <input type="radio" name="exportType" [(ngModel)]="exportType" value="xlsx">
+            XLSX
+        </label>
+        <br>
+
+        <button (click)="export()">Exporter</button>
+    </div>
+
+    <!-- <br> -->
+
+    <button (click)="showPanelImport = !showPanelImport">
+        Importer
+    </button>
+
+    <div class="panel_flotant import_positions" *ngIf="showPanelImport">
+        <!-- <h3>Importer en mode: </h3> -->
+        <div style="width: 100%;"> <button style="float: right;" (click)="showPanelImport=false">X</button> </div>
+        <div>
+            <label>
+                incrémental
+                <input type="radio" name="modeIncremental" [(ngModel)]="modeIncremental" [value]="true">
+            </label>
+            <br>
+            <label>
+                complet
+                <input type="radio" name="modeIncremental" [(ngModel)]="modeIncremental" [value]="false">
+            </label>
+        </div>
+
+        <br>
+
+        <!-- Section pour importer le fichier -->
+        <div>
+            <label for="fileInput">Importer fichier CSV ou Excel :</label>
+            <input type="file" (change)="onFileChange($event); showPanelImport=false" id="fileInput" accept=".csv, .xlsx" />
+        </div>
+
+    </div>
+
+</div>
+<div> Table Antenne : <b>{{filteredList.length}}</b> elements. <span *ngIf="filteredList.length != myList.length" >Filtred.</span> </div>
+
+<div *ngIf="authService.isLoggedIn()" class="scrollable-horizontal" >
+
+    <table>
+        <thead>
+            <tr>
+            <th>
+                DEPT
+            </th>
+
+            <th>
+                G2R
+            </th>
+
+            <th>
+                Nom Site
+            </th>
+
+            <th>
+                UO
+            </th>
+
+            <th>
+                STATUT UO
+            </th>
+
+            <th>
+                CdP Planif DSOR
+            </th>
+
+            <th>
+                ACTEUR PATRIMOINE REGION
+            </th>
+
+            <th>
+                RESPONSABLE SITE
+            </th>
+
+            <th>
+                AVANCEMENT
+            </th>
+
+            <th>
+                PORTEUR PROSPECTION
+            </th>
+
+            <th>
+                BAILLEUR
+            </th>
+
+            <th>
+                PROGRAMME
+            </th>
+
+            <th>
+                PROJET
+            </th>
+
+            <th>
+                TYPE DE SUPPORT PROSPECT RETENU
+            </th>
+
+            <th>
+                UO Fibre
+            </th>
+
+            <th>
+                Statut UO Fibre
+            </th>
+
+            <th>
+                Projet Fibre
+            </th>
+
+            <th>
+                Date prévisionnelle de fin UO Fibre
+            </th>
+
+            <th>
+                REMONTEE DE PROSPECTS
+            </th>
+
+            <th>
+                AVIS RADIO
+            </th>
+
+            <th>
+                ARBITRAGE PROSPECT
+            </th>
+
+            <th>
+                AVIS TRANS
+            </th>
+
+            <th>
+                ACCORD DE PRINCIPE
+            </th>
+
+            <th>
+                VT
+            </th>
+
+            <th>
+                COMITE SITE NEUF
+            </th>
+
+            <th>
+                CHOIX PROSPECT
+            </th>
+
+            <th>
+                ENVOI EB
+            </th>
+
+            <th>
+                REPONSE EBS
+            </th>
+
+            <th>
+                REDACTION DTB
+            </th>
+
+            <th>
+                VALIDATION DTB
+            </th>
+
+            <th>
+                DEVIS TS
+            </th>
+
+            <th>
+                Date planifiée confirmée DEVIS TS
+            </th>
+
+            <th>
+                DOSSIER INFORMATION MAIRIE
+            </th>
+
+            <th>
+                Date de Réalisation Jalon&ARA DOSSIER INFORMATION MAIRIE
+            </th>
+
+            <th>
+                DEPOT-ADMIN
+            </th>
+
+            <th>
+                Date de Réal° DEPOT-ADMIN
+            </th>
+
+            <th>
+                AUTO-ADMIN
+            </th>
+
+            <th>
+                Date planifiée confirmée AUTO-ADMIN
+            </th>
+
+            <th>
+                CONTAINER HW Radio
+            </th>
+
+            <th>
+                CONTAINER HW Antenne
+            </th>
+
+            <th>
+                CONTAINER HW FH
+            </th>
+
+            <th>
+                DEMANDE ENEDIS
+            </th>
+
+            <th>
+                DEVIS ENEDIS
+            </th>
+
+            <th>
+                SIGNATURE CONVENTION
+            </th>
+
+            <th>
+                GO REALISATION
+            </th>
+
+            <th>
+                Date de Réalisation Jalon&ARA GO REALISATION
+            </th>
+
+            <th>
+                Date planifiée confirmée GO REALISATION
+            </th>
+
+            <th>
+                MAD INFRA
+            </th>
+
+            <th>
+                Date planifiée confirmée MAD INFRA
+            </th>
+
+            <th>
+                MAD ENEDIS DEFINITIF
+            </th>
+
+            <th>
+                Date planifiée confirmée MAD ENEDIS DEFINITIF
+            </th>
+
+            <th>
+                MES
+            </th>
+
+            <th>
+                Date planifiée confirmée MES
+            </th>
+
+            <th>
+                RECETTE
+            </th>
+
+            <th>
+                PARFAIT ACHEVEMENT
+            </th>
+
+            <th>
+                Date
+            </th>
+
+
+            <th *ngIf="showActions()">Actions</th>
+            </tr>
+
+            <tr *ngIf="myList && myList.length > 0">
+                <th>
+                    <input type="text" [(ngModel)]="dEPTFilter" placeholder="Filtrer par DEPT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="g2RFilter" placeholder="Filtrer par G2R">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="nom_SiteFilter" placeholder="Filtrer par Nom Site">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="uOFilter" placeholder="Filtrer par UO">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="sTATUT_UOFilter" placeholder="Filtrer par STATUT UO">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cdP_Planif_DSORFilter" placeholder="Filtrer par CdP Planif DSOR">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aCTEUR_PATRIMOINE_REGIONFilter" placeholder="Filtrer par ACTEUR PATRIMOINE REGION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="rESPONSABLE_SITEFilter" placeholder="Filtrer par RESPONSABLE SITE">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aVANCEMENTFilter" placeholder="Filtrer par AVANCEMENT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="pORTEUR_PROSPECTIONFilter" placeholder="Filtrer par PORTEUR PROSPECTION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="bAILLEURFilter" placeholder="Filtrer par BAILLEUR">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="pROGRAMMEFilter" placeholder="Filtrer par PROGRAMME">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="pROJETFilter" placeholder="Filtrer par PROJET">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="tYPE_DE_SUPPORT_PROSPECT_RETENUFilter" placeholder="Filtrer par TYPE DE SUPPORT PROSPECT RETENU">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="uO_FibreFilter" placeholder="Filtrer par UO Fibre">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="statut_UO_FibreFilter" placeholder="Filtrer par Statut UO Fibre">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="projet_FibreFilter" placeholder="Filtrer par Projet Fibre">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_previsionnelle_de_fin_UO_FibreFilter" placeholder="Filtrer par Date prévisionnelle de fin UO Fibre">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="rEMONTEE_DE_PROSPECTSFilter" placeholder="Filtrer par REMONTEE DE PROSPECTS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aVIS_RADIOFilter" placeholder="Filtrer par AVIS RADIO">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aRBITRAGE_PROSPECTFilter" placeholder="Filtrer par ARBITRAGE PROSPECT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aVIS_TRANSFilter" placeholder="Filtrer par AVIS TRANS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aCCORD_DE_PRINCIPEFilter" placeholder="Filtrer par ACCORD DE PRINCIPE">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="vTFilter" placeholder="Filtrer par VT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cOMITE_SITE_NEUFFilter" placeholder="Filtrer par COMITE SITE NEUF">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cHOIX_PROSPECTFilter" placeholder="Filtrer par CHOIX PROSPECT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="eNVOI_EBFilter" placeholder="Filtrer par ENVOI EB">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="rEPONSE_EBSFilter" placeholder="Filtrer par REPONSE EBS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="rEDACTION_DTBFilter" placeholder="Filtrer par REDACTION DTB">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="vALIDATION_DTBFilter" placeholder="Filtrer par VALIDATION DTB">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="dEVIS_TSFilter" placeholder="Filtrer par DEVIS TS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_DEVIS_TSFilter" placeholder="Filtrer par Date planifiée confirmée DEVIS TS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="dOSSIER_INFORMATION_MAIRIEFilter" placeholder="Filtrer par DOSSIER INFORMATION MAIRIE">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter" placeholder="Filtrer par Date de Réalisation Jalon&ARA DOSSIER INFORMATION MAIRIE">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="dEPOT_ADMINFilter" placeholder="Filtrer par DEPOT-ADMIN">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_de_Real_DEPOT_ADMINFilter" placeholder="Filtrer par Date de Réal° DEPOT-ADMIN">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="aUTO_ADMINFilter" placeholder="Filtrer par AUTO-ADMIN">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_AUTO_ADMINFilter" placeholder="Filtrer par Date planifiée confirmée AUTO-ADMIN">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cONTAINER_HW_RadioFilter" placeholder="Filtrer par CONTAINER HW Radio">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cONTAINER_HW_AntenneFilter" placeholder="Filtrer par CONTAINER HW Antenne">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="cONTAINER_HW_FHFilter" placeholder="Filtrer par CONTAINER HW FH">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="dEMANDE_ENEDISFilter" placeholder="Filtrer par DEMANDE ENEDIS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="dEVIS_ENEDISFilter" placeholder="Filtrer par DEVIS ENEDIS">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="sIGNATURE_CONVENTIONFilter" placeholder="Filtrer par SIGNATURE CONVENTION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="gO_REALISATIONFilter" placeholder="Filtrer par GO REALISATION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter" placeholder="Filtrer par Date de Réalisation Jalon&ARA GO REALISATION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_GO_REALISATIONFilter" placeholder="Filtrer par Date planifiée confirmée GO REALISATION">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="mAD_INFRAFilter" placeholder="Filtrer par MAD INFRA">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_MAD_INFRAFilter" placeholder="Filtrer par Date planifiée confirmée MAD INFRA">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="mAD_ENEDIS_DEFINITIFFilter" placeholder="Filtrer par MAD ENEDIS DEFINITIF">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter" placeholder="Filtrer par Date planifiée confirmée MAD ENEDIS DEFINITIF">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="mESFilter" placeholder="Filtrer par MES">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_planifiee_confirmee_MESFilter" placeholder="Filtrer par Date planifiée confirmée MES">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="rECETTEFilter" placeholder="Filtrer par RECETTE">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="pARFAIT_ACHEVEMENTFilter" placeholder="Filtrer par PARFAIT ACHEVEMENT">
+                </th>
+    
+                <th>
+                    <input type="text" [(ngModel)]="date_antenneFilter" placeholder="Filtrer par Date">
+                </th>
+    
+    
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr *ngFor="let obj of filteredList; let i = index">
+
+
+                <td>{{ obj.dEPT }}</td>
+
+                <td>{{ obj.g2R }}</td>
+
+                <td>{{ obj.nom_Site }}</td>
+
+                <td>{{ obj.uO }}</td>
+
+                <td>{{ obj.sTATUT_UO }}</td>
+
+                <td>{{ obj.cdP_Planif_DSOR }}</td>
+
+                <td>{{ obj.aCTEUR_PATRIMOINE_REGION }}</td>
+
+                <td>{{ obj.rESPONSABLE_SITE }}</td>
+
+                <td>{{ obj.aVANCEMENT }}</td>
+
+                <td>{{ obj.pORTEUR_PROSPECTION }}</td>
+
+                <td>{{ obj.bAILLEUR }}</td>
+
+                <td>{{ obj.pROGRAMME }}</td>
+
+                <td>{{ obj.pROJET }}</td>
+
+                <td>{{ obj.tYPE_DE_SUPPORT_PROSPECT_RETENU }}</td>
+
+                <td>{{ obj.uO_Fibre }}</td>
+
+                <td>{{ obj.statut_UO_Fibre }}</td>
+
+                <td>{{ obj.projet_Fibre }}</td>
+
+                <td>{{ obj.date_previsionnelle_de_fin_UO_Fibre }}</td>
+
+                <td>{{ obj.rEMONTEE_DE_PROSPECTS }}</td>
+
+                <td>{{ obj.aVIS_RADIO }}</td>
+
+                <td>{{ obj.aRBITRAGE_PROSPECT }}</td>
+
+                <td>{{ obj.aVIS_TRANS }}</td>
+
+                <td>{{ obj.aCCORD_DE_PRINCIPE }}</td>
+
+                <td>{{ obj.vT }}</td>
+
+                <td>{{ obj.cOMITE_SITE_NEUF }}</td>
+
+                <td>{{ obj.cHOIX_PROSPECT }}</td>
+
+                <td>{{ obj.eNVOI_EB }}</td>
+
+                <td>{{ obj.rEPONSE_EBS }}</td>
+
+                <td>{{ obj.rEDACTION_DTB }}</td>
+
+                <td>{{ obj.vALIDATION_DTB }}</td>
+
+                <td>{{ obj.dEVIS_TS }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_DEVIS_TS }}</td>
+
+                <td>{{ obj.dOSSIER_INFORMATION_MAIRIE }}</td>
+
+                <td>{{ obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE }}</td>
+
+                <td>{{ obj.dEPOT_ADMIN }}</td>
+
+                <td>{{ obj.date_de_Real_DEPOT_ADMIN }}</td>
+
+                <td>{{ obj.aUTO_ADMIN }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_AUTO_ADMIN }}</td>
+
+                <td>{{ obj.cONTAINER_HW_Radio }}</td>
+
+                <td>{{ obj.cONTAINER_HW_Antenne }}</td>
+
+                <td>{{ obj.cONTAINER_HW_FH }}</td>
+
+                <td>{{ obj.dEMANDE_ENEDIS }}</td>
+
+                <td>{{ obj.dEVIS_ENEDIS }}</td>
+
+                <td>{{ obj.sIGNATURE_CONVENTION }}</td>
+
+                <td>{{ obj.gO_REALISATION }}</td>
+
+                <td>{{ obj.date_de_Realisation_Jalon_ARA_GO_REALISATION }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_GO_REALISATION }}</td>
+
+                <td>{{ obj.mAD_INFRA }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_MAD_INFRA }}</td>
+
+                <td>{{ obj.mAD_ENEDIS_DEFINITIF }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF }}</td>
+
+                <td>{{ obj.mES }}</td>
+
+                <td>{{ obj.date_planifiee_confirmee_MES }}</td>
+
+                <td>{{ obj.rECETTE }}</td>
+
+                <td>{{ obj.pARFAIT_ACHEVEMENT }}</td>
+
+                <td>{{ obj.date_antenne }}</td>
+                <td *ngIf="showActions()">
+                    <button (click)="editObj(i)">Modif</button>
+                    <button (click)="deleteObj(i)">Suppr</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<div class="scrollable-vertical" *ngIf="authService.isLoggedIn() && showActions() && showFormEdit() ">
+    <div class="form-entete">
+        <div class="right">
+            <button (click)="closeFormEdit()" >X</button>
+        </div>
+    </div>
+    <form (ngSubmit)="saveObj()">
+
+        <td>{{ currentObj.dEPT }}</td>
+        <input type="text" [(ngModel)]="currentObj.dEPT" name="dEPT" placeholder="DEPT" required>
+
+        <td>{{ currentObj.g2R }}</td>
+        <input type="text" [(ngModel)]="currentObj.g2R" name="g2R" placeholder="G2R" required>
+
+        <td>{{ currentObj.nom_Site }}</td>
+        <input type="text" [(ngModel)]="currentObj.nom_Site" name="nom_Site" placeholder="Nom Site" required>
+
+        <td>{{ currentObj.uO }}</td>
+        <input type="text" [(ngModel)]="currentObj.uO" name="uO" placeholder="UO" required>
+
+        <td>{{ currentObj.sTATUT_UO }}</td>
+        <input type="text" [(ngModel)]="currentObj.sTATUT_UO" name="sTATUT_UO" placeholder="STATUT UO" required>
+
+        <td>{{ currentObj.cdP_Planif_DSOR }}</td>
+        <input type="text" [(ngModel)]="currentObj.cdP_Planif_DSOR" name="cdP_Planif_DSOR" placeholder="CdP Planif DSOR" required>
+
+        <td>{{ currentObj.aCTEUR_PATRIMOINE_REGION }}</td>
+        <input type="text" [(ngModel)]="currentObj.aCTEUR_PATRIMOINE_REGION" name="aCTEUR_PATRIMOINE_REGION" placeholder="ACTEUR PATRIMOINE REGION" required>
+
+        <td>{{ currentObj.rESPONSABLE_SITE }}</td>
+        <input type="text" [(ngModel)]="currentObj.rESPONSABLE_SITE" name="rESPONSABLE_SITE" placeholder="RESPONSABLE SITE" required>
+
+        <td>{{ currentObj.aVANCEMENT }}</td>
+        <input type="text" [(ngModel)]="currentObj.aVANCEMENT" name="aVANCEMENT" placeholder="AVANCEMENT" required>
+
+        <td>{{ currentObj.pORTEUR_PROSPECTION }}</td>
+        <input type="text" [(ngModel)]="currentObj.pORTEUR_PROSPECTION" name="pORTEUR_PROSPECTION" placeholder="PORTEUR PROSPECTION" required>
+
+        <td>{{ currentObj.bAILLEUR }}</td>
+        <input type="text" [(ngModel)]="currentObj.bAILLEUR" name="bAILLEUR" placeholder="BAILLEUR" required>
+
+        <td>{{ currentObj.pROGRAMME }}</td>
+        <input type="text" [(ngModel)]="currentObj.pROGRAMME" name="pROGRAMME" placeholder="PROGRAMME" required>
+
+        <td>{{ currentObj.pROJET }}</td>
+        <input type="text" [(ngModel)]="currentObj.pROJET" name="pROJET" placeholder="PROJET" required>
+
+        <td>{{ currentObj.tYPE_DE_SUPPORT_PROSPECT_RETENU }}</td>
+        <input type="text" [(ngModel)]="currentObj.tYPE_DE_SUPPORT_PROSPECT_RETENU" name="tYPE_DE_SUPPORT_PROSPECT_RETENU" placeholder="TYPE DE SUPPORT PROSPECT RETENU" required>
+
+        <td>{{ currentObj.uO_Fibre }}</td>
+        <input type="text" [(ngModel)]="currentObj.uO_Fibre" name="uO_Fibre" placeholder="UO Fibre" required>
+
+        <td>{{ currentObj.statut_UO_Fibre }}</td>
+        <input type="text" [(ngModel)]="currentObj.statut_UO_Fibre" name="statut_UO_Fibre" placeholder="Statut UO Fibre" required>
+
+        <td>{{ currentObj.projet_Fibre }}</td>
+        <input type="text" [(ngModel)]="currentObj.projet_Fibre" name="projet_Fibre" placeholder="Projet Fibre" required>
+
+        <td>{{ currentObj.date_previsionnelle_de_fin_UO_Fibre }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_previsionnelle_de_fin_UO_Fibre" name="date_previsionnelle_de_fin_UO_Fibre" placeholder="Date prévisionnelle de fin UO Fibre" required>
+
+        <td>{{ currentObj.rEMONTEE_DE_PROSPECTS }}</td>
+        <input type="text" [(ngModel)]="currentObj.rEMONTEE_DE_PROSPECTS" name="rEMONTEE_DE_PROSPECTS" placeholder="REMONTEE DE PROSPECTS" required>
+
+        <td>{{ currentObj.aVIS_RADIO }}</td>
+        <input type="text" [(ngModel)]="currentObj.aVIS_RADIO" name="aVIS_RADIO" placeholder="AVIS RADIO" required>
+
+        <td>{{ currentObj.aRBITRAGE_PROSPECT }}</td>
+        <input type="text" [(ngModel)]="currentObj.aRBITRAGE_PROSPECT" name="aRBITRAGE_PROSPECT" placeholder="ARBITRAGE PROSPECT" required>
+
+        <td>{{ currentObj.aVIS_TRANS }}</td>
+        <input type="text" [(ngModel)]="currentObj.aVIS_TRANS" name="aVIS_TRANS" placeholder="AVIS TRANS" required>
+
+        <td>{{ currentObj.aCCORD_DE_PRINCIPE }}</td>
+        <input type="text" [(ngModel)]="currentObj.aCCORD_DE_PRINCIPE" name="aCCORD_DE_PRINCIPE" placeholder="ACCORD DE PRINCIPE" required>
+
+        <td>{{ currentObj.vT }}</td>
+        <input type="text" [(ngModel)]="currentObj.vT" name="vT" placeholder="VT" required>
+
+        <td>{{ currentObj.cOMITE_SITE_NEUF }}</td>
+        <input type="text" [(ngModel)]="currentObj.cOMITE_SITE_NEUF" name="cOMITE_SITE_NEUF" placeholder="COMITE SITE NEUF" required>
+
+        <td>{{ currentObj.cHOIX_PROSPECT }}</td>
+        <input type="text" [(ngModel)]="currentObj.cHOIX_PROSPECT" name="cHOIX_PROSPECT" placeholder="CHOIX PROSPECT" required>
+
+        <td>{{ currentObj.eNVOI_EB }}</td>
+        <input type="text" [(ngModel)]="currentObj.eNVOI_EB" name="eNVOI_EB" placeholder="ENVOI EB" required>
+
+        <td>{{ currentObj.rEPONSE_EBS }}</td>
+        <input type="text" [(ngModel)]="currentObj.rEPONSE_EBS" name="rEPONSE_EBS" placeholder="REPONSE EBS" required>
+
+        <td>{{ currentObj.rEDACTION_DTB }}</td>
+        <input type="text" [(ngModel)]="currentObj.rEDACTION_DTB" name="rEDACTION_DTB" placeholder="REDACTION DTB" required>
+
+        <td>{{ currentObj.vALIDATION_DTB }}</td>
+        <input type="text" [(ngModel)]="currentObj.vALIDATION_DTB" name="vALIDATION_DTB" placeholder="VALIDATION DTB" required>
+
+        <td>{{ currentObj.dEVIS_TS }}</td>
+        <input type="text" [(ngModel)]="currentObj.dEVIS_TS" name="dEVIS_TS" placeholder="DEVIS TS" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_DEVIS_TS }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_DEVIS_TS" name="date_planifiee_confirmee_DEVIS_TS" placeholder="Date planifiée confirmée DEVIS TS" required>
+
+        <td>{{ currentObj.dOSSIER_INFORMATION_MAIRIE }}</td>
+        <input type="text" [(ngModel)]="currentObj.dOSSIER_INFORMATION_MAIRIE" name="dOSSIER_INFORMATION_MAIRIE" placeholder="DOSSIER INFORMATION MAIRIE" required>
+
+        <td>{{ currentObj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE" name="date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE" placeholder="Date de Réalisation Jalon&ARA DOSSIER INFORMATION MAIRIE" required>
+
+        <td>{{ currentObj.dEPOT_ADMIN }}</td>
+        <input type="text" [(ngModel)]="currentObj.dEPOT_ADMIN" name="dEPOT_ADMIN" placeholder="DEPOT-ADMIN" required>
+
+        <td>{{ currentObj.date_de_Real_DEPOT_ADMIN }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_de_Real_DEPOT_ADMIN" name="date_de_Real_DEPOT_ADMIN" placeholder="Date de Réal° DEPOT-ADMIN" required>
+
+        <td>{{ currentObj.aUTO_ADMIN }}</td>
+        <input type="text" [(ngModel)]="currentObj.aUTO_ADMIN" name="aUTO_ADMIN" placeholder="AUTO-ADMIN" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_AUTO_ADMIN }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_AUTO_ADMIN" name="date_planifiee_confirmee_AUTO_ADMIN" placeholder="Date planifiée confirmée AUTO-ADMIN" required>
+
+        <td>{{ currentObj.cONTAINER_HW_Radio }}</td>
+        <input type="text" [(ngModel)]="currentObj.cONTAINER_HW_Radio" name="cONTAINER_HW_Radio" placeholder="CONTAINER HW Radio" required>
+
+        <td>{{ currentObj.cONTAINER_HW_Antenne }}</td>
+        <input type="text" [(ngModel)]="currentObj.cONTAINER_HW_Antenne" name="cONTAINER_HW_Antenne" placeholder="CONTAINER HW Antenne" required>
+
+        <td>{{ currentObj.cONTAINER_HW_FH }}</td>
+        <input type="text" [(ngModel)]="currentObj.cONTAINER_HW_FH" name="cONTAINER_HW_FH" placeholder="CONTAINER HW FH" required>
+
+        <td>{{ currentObj.dEMANDE_ENEDIS }}</td>
+        <input type="text" [(ngModel)]="currentObj.dEMANDE_ENEDIS" name="dEMANDE_ENEDIS" placeholder="DEMANDE ENEDIS" required>
+
+        <td>{{ currentObj.dEVIS_ENEDIS }}</td>
+        <input type="text" [(ngModel)]="currentObj.dEVIS_ENEDIS" name="dEVIS_ENEDIS" placeholder="DEVIS ENEDIS" required>
+
+        <td>{{ currentObj.sIGNATURE_CONVENTION }}</td>
+        <input type="text" [(ngModel)]="currentObj.sIGNATURE_CONVENTION" name="sIGNATURE_CONVENTION" placeholder="SIGNATURE CONVENTION" required>
+
+        <td>{{ currentObj.gO_REALISATION }}</td>
+        <input type="text" [(ngModel)]="currentObj.gO_REALISATION" name="gO_REALISATION" placeholder="GO REALISATION" required>
+
+        <td>{{ currentObj.date_de_Realisation_Jalon_ARA_GO_REALISATION }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_de_Realisation_Jalon_ARA_GO_REALISATION" name="date_de_Realisation_Jalon_ARA_GO_REALISATION" placeholder="Date de Réalisation Jalon&ARA GO REALISATION" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_GO_REALISATION }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_GO_REALISATION" name="date_planifiee_confirmee_GO_REALISATION" placeholder="Date planifiée confirmée GO REALISATION" required>
+
+        <td>{{ currentObj.mAD_INFRA }}</td>
+        <input type="text" [(ngModel)]="currentObj.mAD_INFRA" name="mAD_INFRA" placeholder="MAD INFRA" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_MAD_INFRA }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_MAD_INFRA" name="date_planifiee_confirmee_MAD_INFRA" placeholder="Date planifiée confirmée MAD INFRA" required>
+
+        <td>{{ currentObj.mAD_ENEDIS_DEFINITIF }}</td>
+        <input type="text" [(ngModel)]="currentObj.mAD_ENEDIS_DEFINITIF" name="mAD_ENEDIS_DEFINITIF" placeholder="MAD ENEDIS DEFINITIF" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF" name="date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF" placeholder="Date planifiée confirmée MAD ENEDIS DEFINITIF" required>
+
+        <td>{{ currentObj.mES }}</td>
+        <input type="text" [(ngModel)]="currentObj.mES" name="mES" placeholder="MES" required>
+
+        <td>{{ currentObj.date_planifiee_confirmee_MES }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_planifiee_confirmee_MES" name="date_planifiee_confirmee_MES" placeholder="Date planifiée confirmée MES" required>
+
+        <td>{{ currentObj.rECETTE }}</td>
+        <input type="text" [(ngModel)]="currentObj.rECETTE" name="rECETTE" placeholder="RECETTE" required>
+
+        <td>{{ currentObj.pARFAIT_ACHEVEMENT }}</td>
+        <input type="text" [(ngModel)]="currentObj.pARFAIT_ACHEVEMENT" name="pARFAIT_ACHEVEMENT" placeholder="PARFAIT ACHEVEMENT" required>
+
+        <td>{{ currentObj.date_antenne }}</td>
+        <input type="text" [(ngModel)]="currentObj.date_antenne" name="date_antenne" placeholder="Date" required>
+
+        <br><br>
+
+        <button type="submit">{{ editingIndex !== null ? 'Modifier' : 'Ajouter' }}</button>
+        <button (click)="initObj()" >Clear</button>
+    </form>
+
+
+</div>

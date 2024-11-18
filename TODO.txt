@@ -1,6 +1,8 @@
 TODO :
 ======
 
+regler pbm des accents utf-8 
+
 import file.csv 
 
     methode : taguer lignes inexistentes dans file import 

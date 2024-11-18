@@ -14,6 +14,9 @@ import { UserTableFilterExcelComponent } from './compo/user-table/user-table-fil
 import { UserTableComponent } from './compo/user-table/user-table.component';
 import { ConfirmDialogComponent } from './compo/util/confirm-dialog/confirm-dialog.component';
 import { InfoDialogComponent } from './compo/util/info-dialog/info-dialog.component';
+import { AntenneComponent } from './compo/antenne/antenne.component';
+import { AntenneService } from './service/antenne.service';
+// __END_IMPORT__
 
 @NgModule({
   declarations: [
@@ -23,6 +26,8 @@ import { InfoDialogComponent } from './compo/util/info-dialog/info-dialog.compon
     LoginComponent,
     ConfirmDialogComponent,
     InfoDialogComponent,
+    AntenneComponent,
+    //__END_DECLARATION__
   ],
   imports: [
     BrowserModule,
@@ -32,7 +37,8 @@ import { InfoDialogComponent } from './compo/util/info-dialog/info-dialog.compon
     HttpClientModule,
     BrowserAnimationsModule  ,
     MatDialogModule,
-    // MatButtonModule
+    // MatButtonModule, 
+    // 
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

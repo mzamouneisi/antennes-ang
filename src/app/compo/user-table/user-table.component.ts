@@ -287,13 +287,18 @@ export class UserTableComponent implements OnInit {
       if (file) {
         const fileExtension = file.name.split('.').pop().toLowerCase();
 
+        let isErr = false 
+
         if (fileExtension === 'csv') {
           this.readCSV(file);
         } else if (fileExtension === 'xlsx') {
           this.readExcel(file);
         } else {
+          isErr = true 
           alert('Veuillez sélectionner un fichier CSV ou Excel');
         }
+
+        if(!isErr) this.importerInServer(); 
 
       }
 
@@ -304,17 +309,6 @@ export class UserTableComponent implements OnInit {
     );
 
 
-  }
-
-  importerInServer() {
-    this.myService.importer(this.users, this.modeIncremental, false ).subscribe(data => {
-      console.log("importerInServer : data : ", data)
-      console.log("importerInServer : modeIncremental, users : ", this.modeIncremental, this.users )
-    },
-      error => {
-        console.error('Error importer', error)
-      }
-    );
   }
 
   // Importer un fichier CSV
@@ -380,7 +374,6 @@ export class UserTableComponent implements OnInit {
           this.saveFull(newUser);
         }
       }
-      this.importerInServer(); 
     };
     reader.readAsText(file);
 
@@ -458,7 +451,6 @@ export class UserTableComponent implements OnInit {
         } else {
           this.saveFull(newUser);
         }
-        this.importerInServer();  
       }
     };
     reader.readAsArrayBuffer(file);
@@ -485,6 +477,19 @@ export class UserTableComponent implements OnInit {
   // Sauvegarde complète : Ajouter tous les utilisateurs (remplacement complet)
   saveFull(newUser: MyUser) {
     this.users.push(newUser); // Ajoute l'utilisateur à la table (remplacement complet)
+  }
+
+  importerInServer() {
+    
+    console.log("importerInServer : modeIncremental, users : ", this.modeIncremental, this.users )
+
+    this.myService.importer(this.users, this.modeIncremental, false ).subscribe(data => {
+      console.log("importerInServer : data : ", data)
+    },
+      error => {
+        console.error('Error importer', error)
+      }
+    );
   }
 
 

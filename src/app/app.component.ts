@@ -38,12 +38,5 @@ export class AppComponent implements OnInit {
   goToLogin() {
     this.router.navigate(['/login']); // Redirige vers le composant de login
   }
-
-  btn_users_clicked() {
-    this.router.navigate(['/users'])
-  }
-
-  btn_users_filter_excel_clicked() {
-    this.router.navigate(['/usersFilterExcel'])
-  }
+  
 }

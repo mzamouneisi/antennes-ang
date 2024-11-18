@@ -17,12 +17,18 @@
   </div>
 
   <div class="right" *ngIf="authService.isLoggedIn()">
-    <button (click)="btn_users_clicked()" class="btn_users">
+    <button (click)="router.navigate(['/users'])" class="btn_users">
       Users
     </button>
-    <button (click)="btn_users_filter_excel_clicked()" class="btn_users_filter_excel">
+    <button (click)="router.navigate(['/usersFilterExcel'])" class="btn_users_filter_excel">
       Users Filter Excel
     </button>
+    <button (click)="router.navigate(['/antenne'])" class="antenne">
+      Antenne
+    </button>
+
+    <!--___END_MENU__-->
+
   </div>
 </div>
 

@@ -34,20 +34,21 @@ export class UtilService extends Aservice {
     return null;
   }
 
-  /**
-   * Convertit un objet Date en chaîne au format 'yyyy/MM/dd'
-   * @param date - La date à convertir
-   * @returns La chaîne 'yyyy/MM/dd' ou une chaîne vide si la date est invalide
-   */
   dateToString(date: Date): string {
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       return ''; // Date invalide
     }
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ajout du 0 pour les mois < 10
-    const day = date.getDate().toString().padStart(2, '0'); // Ajout du 0 pour les jours < 10
-    return `${year}/${month}/${day}`;
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Mois avec 0 initial si nécessaire
+    const day = date.getDate().toString().padStart(2, '0'); // Jour avec 0 initial si nécessaire
+  
+    const hours = date.getHours().toString().padStart(2, '0'); // Heures
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Minutes
+    const seconds = date.getSeconds().toString().padStart(2, '0'); // Secondes
+  
+    return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
   }
+  
 
   formatDate(dateString: string): string {
     if(!dateString) return '';
@@ -57,6 +58,16 @@ export class UtilService extends Aservice {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  }
+
+  getDurationMnSs(startDate : Date) : string {
+    const startDuration = startDate.getTime() 
+    const endTime = new Date(); // Capture la fin
+    const durationMs = endTime.getTime() - startDuration; // Temps en ms
+  
+    const minutes = Math.floor(durationMs / 60000); // Convertir en minutes
+    const seconds = Math.floor((durationMs % 60000) / 1000); // Récupérer les secondes restantes
+    return minutes + " min " + seconds + " sec"; // Formater l'information
   }
 
 }

@@ -227,6 +227,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     height: 500px;          
     overflow-y: hidden;       
     overflow-x: auto;
+    resize: vertical;
     border: 1px solid #ccc;  
     padding: 10px;           
     box-sizing: border-box;  
@@ -236,7 +237,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   .scrollable-vertical {
     width: 500px ;           
     height: 300px;           
-    overflow-x: auto;        
+    overflow-x: auto;    
+    resize: horizontal;    
     border: 1px solid #ccc;  
     padding: 10px;           
     box-sizing: border-box;  

@@ -51,242 +51,39 @@
     </div>
 
 </div>
-<div> Table Antenne : <b>{{filteredList.length}}</b> elements. <span *ngIf="filteredList.length != myList.length" >Filtred.</span> </div>
+
+<p style="margin-left: 10px;">{{ infos }}</p>
+
+<div style="margin-left: 10px;"> 
+    Table Antenne : <b>{{filteredList.length}}</b> elements. 
+    <span *ngIf="filteredList.length != myList.length" >Filtred.</span> 
+</div>
 
 <div *ngIf="authService.isLoggedIn()" class="scrollable-horizontal" >
 
     <table>
         <thead>
+
             <tr>
-            <th>
-                DEPT
-            </th>
+                <td></td>
+                <td style="text-align: center; width: 150px;" *ngFor="let prop of tableLabels; let i = index">
+                    {{ i + 1 }} 
+                </td> 
 
-            <th>
-                G2R
-            </th>
+                <!-- <th *ngIf="showActions()"></th> -->
+            </tr>
 
-            <th>
-                Nom Site
-            </th>
+            <tr>
+                <th style="text-align: center;">NUM</th>
+                <th style="text-align: center;" *ngFor="let prop of tableLabels; let i = index">
+                    {{ prop }}
+                </th> 
 
-            <th>
-                UO
-            </th>
-
-            <th>
-                STATUT UO
-            </th>
-
-            <th>
-                CdP Planif DSOR
-            </th>
-
-            <th>
-                ACTEUR PATRIMOINE REGION
-            </th>
-
-            <th>
-                RESPONSABLE SITE
-            </th>
-
-            <th>
-                AVANCEMENT
-            </th>
-
-            <th>
-                PORTEUR PROSPECTION
-            </th>
-
-            <th>
-                BAILLEUR
-            </th>
-
-            <th>
-                PROGRAMME
-            </th>
-
-            <th>
-                PROJET
-            </th>
-
-            <th>
-                TYPE DE SUPPORT PROSPECT RETENU
-            </th>
-
-            <th>
-                UO Fibre
-            </th>
-
-            <th>
-                Statut UO Fibre
-            </th>
-
-            <th>
-                Projet Fibre
-            </th>
-
-            <th>
-                Date prévisionnelle de fin UO Fibre
-            </th>
-
-            <th>
-                REMONTEE DE PROSPECTS
-            </th>
-
-            <th>
-                AVIS RADIO
-            </th>
-
-            <th>
-                ARBITRAGE PROSPECT
-            </th>
-
-            <th>
-                AVIS TRANS
-            </th>
-
-            <th>
-                ACCORD DE PRINCIPE
-            </th>
-
-            <th>
-                VT
-            </th>
-
-            <th>
-                COMITE SITE NEUF
-            </th>
-
-            <th>
-                CHOIX PROSPECT
-            </th>
-
-            <th>
-                ENVOI EB
-            </th>
-
-            <th>
-                REPONSE EBS
-            </th>
-
-            <th>
-                REDACTION DTB
-            </th>
-
-            <th>
-                VALIDATION DTB
-            </th>
-
-            <th>
-                DEVIS TS
-            </th>
-
-            <th>
-                Date planifiée confirmée DEVIS TS
-            </th>
-
-            <th>
-                DOSSIER INFORMATION MAIRIE
-            </th>
-
-            <th>
-                Date de Réalisation Jalon&ARA DOSSIER INFORMATION MAIRIE
-            </th>
-
-            <th>
-                DEPOT-ADMIN
-            </th>
-
-            <th>
-                Date de Réal° DEPOT-ADMIN
-            </th>
-
-            <th>
-                AUTO-ADMIN
-            </th>
-
-            <th>
-                Date planifiée confirmée AUTO-ADMIN
-            </th>
-
-            <th>
-                CONTAINER HW Radio
-            </th>
-
-            <th>
-                CONTAINER HW Antenne
-            </th>
-
-            <th>
-                CONTAINER HW FH
-            </th>
-
-            <th>
-                DEMANDE ENEDIS
-            </th>
-
-            <th>
-                DEVIS ENEDIS
-            </th>
-
-            <th>
-                SIGNATURE CONVENTION
-            </th>
-
-            <th>
-                GO REALISATION
-            </th>
-
-            <th>
-                Date de Réalisation Jalon&ARA GO REALISATION
-            </th>
-
-            <th>
-                Date planifiée confirmée GO REALISATION
-            </th>
-
-            <th>
-                MAD INFRA
-            </th>
-
-            <th>
-                Date planifiée confirmée MAD INFRA
-            </th>
-
-            <th>
-                MAD ENEDIS DEFINITIF
-            </th>
-
-            <th>
-                Date planifiée confirmée MAD ENEDIS DEFINITIF
-            </th>
-
-            <th>
-                MES
-            </th>
-
-            <th>
-                Date planifiée confirmée MES
-            </th>
-
-            <th>
-                RECETTE
-            </th>
-
-            <th>
-                PARFAIT ACHEVEMENT
-            </th>
-
-            <th>
-                Date
-            </th>
-
-
-            <th *ngIf="showActions()">Actions</th>
+                <!-- <th *ngIf="showActions()" style="text-align: center;">Actions</th> -->
             </tr>
 
             <tr *ngIf="myList && myList.length > 0">
+                <th></th>
                 <th>
                     <input type="text" [(ngModel)]="dEPTFilter" placeholder="Filtrer par DEPT">
                 </th>
@@ -516,124 +313,125 @@
 
         </thead>
         <tbody>
-            <tr *ngFor="let obj of filteredList; let i = index">
+            <tr *ngFor="let obj of filteredList; let i = index" (click)="onRowClick(obj, i)" [id]="'row-' + (i + 1)" >
+                <td style="text-align: center; ">{{i+1}} </td>
 
 
-                <td>{{ obj.dEPT }}</td>
+                    <td style="width: 150px;">{{ obj.dEPT }}</td>
 
-                <td>{{ obj.g2R }}</td>
+                    <td style="width: 150px;">{{ obj.g2R }}</td>
 
-                <td>{{ obj.nom_Site }}</td>
+                    <td style="width: 150px;">{{ obj.nom_Site }}</td>
 
-                <td>{{ obj.uO }}</td>
+                    <td style="width: 150px;">{{ obj.uO }}</td>
 
-                <td>{{ obj.sTATUT_UO }}</td>
+                    <td style="width: 150px;">{{ obj.sTATUT_UO }}</td>
 
-                <td>{{ obj.cdP_Planif_DSOR }}</td>
+                    <td style="width: 150px;">{{ obj.cdP_Planif_DSOR }}</td>
 
-                <td>{{ obj.aCTEUR_PATRIMOINE_REGION }}</td>
+                    <td style="width: 150px;">{{ obj.aCTEUR_PATRIMOINE_REGION }}</td>
 
-                <td>{{ obj.rESPONSABLE_SITE }}</td>
+                    <td style="width: 150px;">{{ obj.rESPONSABLE_SITE }}</td>
 
-                <td>{{ obj.aVANCEMENT }}</td>
+                    <td style="width: 150px;">{{ obj.aVANCEMENT }}</td>
 
-                <td>{{ obj.pORTEUR_PROSPECTION }}</td>
+                    <td style="width: 150px;">{{ obj.pORTEUR_PROSPECTION }}</td>
 
-                <td>{{ obj.bAILLEUR }}</td>
+                    <td style="width: 150px;">{{ obj.bAILLEUR }}</td>
 
-                <td>{{ obj.pROGRAMME }}</td>
+                    <td style="width: 150px;">{{ obj.pROGRAMME }}</td>
 
-                <td>{{ obj.pROJET }}</td>
+                    <td style="width: 150px;">{{ obj.pROJET }}</td>
 
-                <td>{{ obj.tYPE_DE_SUPPORT_PROSPECT_RETENU }}</td>
+                    <td style="width: 150px;">{{ obj.tYPE_DE_SUPPORT_PROSPECT_RETENU }}</td>
 
-                <td>{{ obj.uO_Fibre }}</td>
+                    <td style="width: 150px;">{{ obj.uO_Fibre }}</td>
 
-                <td>{{ obj.statut_UO_Fibre }}</td>
+                    <td style="width: 150px;">{{ obj.statut_UO_Fibre }}</td>
 
-                <td>{{ obj.projet_Fibre }}</td>
+                    <td style="width: 150px;">{{ obj.projet_Fibre }}</td>
 
-                <td>{{ obj.date_previsionnelle_de_fin_UO_Fibre }}</td>
+                    <td style="width: 150px;">{{ obj.date_previsionnelle_de_fin_UO_Fibre }}</td>
 
-                <td>{{ obj.rEMONTEE_DE_PROSPECTS }}</td>
+                    <td style="width: 150px;">{{ obj.rEMONTEE_DE_PROSPECTS }}</td>
 
-                <td>{{ obj.aVIS_RADIO }}</td>
+                    <td style="width: 150px;">{{ obj.aVIS_RADIO }}</td>
 
-                <td>{{ obj.aRBITRAGE_PROSPECT }}</td>
+                    <td style="width: 150px;">{{ obj.aRBITRAGE_PROSPECT }}</td>
 
-                <td>{{ obj.aVIS_TRANS }}</td>
+                    <td style="width: 150px;">{{ obj.aVIS_TRANS }}</td>
 
-                <td>{{ obj.aCCORD_DE_PRINCIPE }}</td>
+                    <td style="width: 150px;">{{ obj.aCCORD_DE_PRINCIPE }}</td>
 
-                <td>{{ obj.vT }}</td>
+                    <td style="width: 150px;">{{ obj.vT }}</td>
 
-                <td>{{ obj.cOMITE_SITE_NEUF }}</td>
+                    <td style="width: 150px;">{{ obj.cOMITE_SITE_NEUF }}</td>
 
-                <td>{{ obj.cHOIX_PROSPECT }}</td>
+                    <td style="width: 150px;">{{ obj.cHOIX_PROSPECT }}</td>
 
-                <td>{{ obj.eNVOI_EB }}</td>
+                    <td style="width: 150px;">{{ obj.eNVOI_EB }}</td>
 
-                <td>{{ obj.rEPONSE_EBS }}</td>
+                    <td style="width: 150px;">{{ obj.rEPONSE_EBS }}</td>
 
-                <td>{{ obj.rEDACTION_DTB }}</td>
+                    <td style="width: 150px;">{{ obj.rEDACTION_DTB }}</td>
 
-                <td>{{ obj.vALIDATION_DTB }}</td>
+                    <td style="width: 150px;">{{ obj.vALIDATION_DTB }}</td>
 
-                <td>{{ obj.dEVIS_TS }}</td>
+                    <td style="width: 150px;">{{ obj.dEVIS_TS }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_DEVIS_TS }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_DEVIS_TS }}</td>
 
-                <td>{{ obj.dOSSIER_INFORMATION_MAIRIE }}</td>
+                    <td style="width: 150px;">{{ obj.dOSSIER_INFORMATION_MAIRIE }}</td>
 
-                <td>{{ obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE }}</td>
+                    <td style="width: 150px;">{{ obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE }}</td>
 
-                <td>{{ obj.dEPOT_ADMIN }}</td>
+                    <td style="width: 150px;">{{ obj.dEPOT_ADMIN }}</td>
 
-                <td>{{ obj.date_de_Real_DEPOT_ADMIN }}</td>
+                    <td style="width: 150px;">{{ obj.date_de_Real_DEPOT_ADMIN }}</td>
 
-                <td>{{ obj.aUTO_ADMIN }}</td>
+                    <td style="width: 150px;">{{ obj.aUTO_ADMIN }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_AUTO_ADMIN }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_AUTO_ADMIN }}</td>
 
-                <td>{{ obj.cONTAINER_HW_Radio }}</td>
+                    <td style="width: 150px;">{{ obj.cONTAINER_HW_Radio }}</td>
 
-                <td>{{ obj.cONTAINER_HW_Antenne }}</td>
+                    <td style="width: 150px;">{{ obj.cONTAINER_HW_Antenne }}</td>
 
-                <td>{{ obj.cONTAINER_HW_FH }}</td>
+                    <td style="width: 150px;">{{ obj.cONTAINER_HW_FH }}</td>
 
-                <td>{{ obj.dEMANDE_ENEDIS }}</td>
+                    <td style="width: 150px;">{{ obj.dEMANDE_ENEDIS }}</td>
 
-                <td>{{ obj.dEVIS_ENEDIS }}</td>
+                    <td style="width: 150px;">{{ obj.dEVIS_ENEDIS }}</td>
 
-                <td>{{ obj.sIGNATURE_CONVENTION }}</td>
+                    <td style="width: 150px;">{{ obj.sIGNATURE_CONVENTION }}</td>
 
-                <td>{{ obj.gO_REALISATION }}</td>
+                    <td style="width: 150px;">{{ obj.gO_REALISATION }}</td>
 
-                <td>{{ obj.date_de_Realisation_Jalon_ARA_GO_REALISATION }}</td>
+                    <td style="width: 150px;">{{ obj.date_de_Realisation_Jalon_ARA_GO_REALISATION }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_GO_REALISATION }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_GO_REALISATION }}</td>
 
-                <td>{{ obj.mAD_INFRA }}</td>
+                    <td style="width: 150px;">{{ obj.mAD_INFRA }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_MAD_INFRA }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_MAD_INFRA }}</td>
 
-                <td>{{ obj.mAD_ENEDIS_DEFINITIF }}</td>
+                    <td style="width: 150px;">{{ obj.mAD_ENEDIS_DEFINITIF }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF }}</td>
 
-                <td>{{ obj.mES }}</td>
+                    <td style="width: 150px;">{{ obj.mES }}</td>
 
-                <td>{{ obj.date_planifiee_confirmee_MES }}</td>
+                    <td style="width: 150px;">{{ obj.date_planifiee_confirmee_MES }}</td>
 
-                <td>{{ obj.rECETTE }}</td>
+                    <td style="width: 150px;">{{ obj.rECETTE }}</td>
 
-                <td>{{ obj.pARFAIT_ACHEVEMENT }}</td>
+                    <td style="width: 150px;">{{ obj.pARFAIT_ACHEVEMENT }}</td>
 
-                <td>{{ obj.date_antenne }}</td>
-                <td *ngIf="showActions()">
+                    <td style="width: 150px;">{{ obj.date_antenne }}</td>
+                <!-- <td *ngIf="showActions()" style="text-align: center;">
                     <button (click)="editObj(i)">Modif</button>
                     <button (click)="deleteObj(i)">Suppr</button>
-                </td>
+                </td> -->
             </tr>
         </tbody>
     </table>
@@ -821,6 +619,8 @@
 
         <button type="submit">{{ editingIndex !== null ? 'Modifier' : 'Ajouter' }}</button>
         <button (click)="initObj()" >Clear</button>
+        <button (click)="deleteCurrentObj()" *ngIf="currentObj && currentObj.id" >Delete</button>
+
     </form>
 
 

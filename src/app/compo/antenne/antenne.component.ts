@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
 import { saveAs } from 'file-saver'; // Utilisez file-saver pour télécharger les fichiers
 import * as XLSX from 'xlsx';
 import { Antenne } from '../../data/antenne.model';
@@ -134,17 +134,24 @@ const tableLabels = [
 @Component({
   selector: 'app-antenne',
   templateUrl: './antenne.component.html',
-  styleUrls: ['./antenne.component.css']
+  styleUrls: ['./antenne.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class AntenneComponent implements OnInit {
+export class AntenneComponent implements OnInit, AfterViewChecked {
+  infos = "";
+  startDateChargement = new Date() 
+  isTableReady: boolean = false;
   myList: Antenne [] = [];
   modeIncremental: boolean = true;
   userConnected = this.authService.userConnected;
+  nbElemVisible = this.filteredList?.length 
 
   mapPropLabel: { [key: string]: string } = {};
   mapLabelProp: { [key: string]: string } = {};
 
-  constructor(private myService: AntenneService, public authService: AuthService, private dialog: MatDialog, public util: UtilService) {
+  tableLabels = tableLabels;
+
+  constructor(private myService: AntenneService, public authService: AuthService, private dialog: MatDialog, public util: UtilService, private zone: NgZone) {
     this.userConnected = this.authService.getUserConnected()
   }
 
@@ -164,22 +171,60 @@ export class AntenneComponent implements OnInit {
 
   }
 
+  startInfosChargement() {
+    this.startDateChargement = new Date()
+    this.infos = 'Chargement en cours ... A : ' + this.util.dateToString(this.startDateChargement);
+  }
+
+  ngAfterViewChecked() {
+    if (this.filteredList.length > 0 && !this.isTableReady) {
+      const lastRowId = "row-" + this.filteredList.length;
+      const lastRow = document.getElementById(lastRowId);
+
+      if (lastRow) {
+        this.isTableReady = true;
+        console.log('Dernière ligne détectée :', lastRow);
+        // Utilisation de `NgZone.run` pour éviter l'erreur
+        this.zone.run(() => {
+          this.endInfosChargement();
+        });
+      }
+    }
+  }
+
+  endInfosChargement() {
+    setTimeout(
+      () => {
+        this.infos = 'Chargement terminé en : ' + this.util.getDurationMnSs(this.startDateChargement);
+        console.log(this.infos);
+      }, 0
+    )
+  }
+
   findAll() {
-    console.log("ihm antenne findAll")
-    this.myService.findAll().subscribe(data => {
-      console.log("findAll : data : ", data)
-      this.myList = data;
-      this.myService.setMyList(this.myList)
-    },
-      error => {
-        console.error('Error findAll', error)
+    this.startInfosChargement();
+
+    console.log('IHMM Antenne findAll');
+    this.myService.findAll().subscribe(
+      (data) => {
+        console.log('findAll : data :', data);
+        this.myList = data;
+        this.myService.setMyList(this.myList);
+        // this.endInfosChargement();
+      },
+      (error) => {
+        console.error('Erreur findAll', error);
+        this.endInfosChargement(); // Arrêter l'intervalle même en cas d'erreur
+        this.zone.run(() => {
+          this.infos += '. Erreur lors du chargement.';
+        });
       }
     );
   }
 
   currentObj: Antenne = this.getObjInit();
   editingIndex: number | null = null;  // Index de l'utilisateur en cours d'édition
-  isShowForm = false
+  isShowForm = true 
 
     // Filtres
     // nameFilter: string = '';
@@ -248,62 +293,62 @@ export class AntenneComponent implements OnInit {
   get filteredList(): Antenne [] {
     return this.myList.filter(obj => {
       return (
-        (!this.dEPTFilter || obj.dEPT.toLowerCase().includes(this.dEPTFilter.toLowerCase())) && 
-        (!this.g2RFilter || obj.g2R.toLowerCase().includes(this.g2RFilter.toLowerCase())) && 
-        (!this.nom_SiteFilter || obj.nom_Site.toLowerCase().includes(this.nom_SiteFilter.toLowerCase())) && 
-        (!this.uOFilter || obj.uO.toLowerCase().includes(this.uOFilter.toLowerCase())) && 
-        (!this.sTATUT_UOFilter || obj.sTATUT_UO.toLowerCase().includes(this.sTATUT_UOFilter.toLowerCase())) && 
-        (!this.cdP_Planif_DSORFilter || obj.cdP_Planif_DSOR.toLowerCase().includes(this.cdP_Planif_DSORFilter.toLowerCase())) && 
-        (!this.aCTEUR_PATRIMOINE_REGIONFilter || obj.aCTEUR_PATRIMOINE_REGION.toLowerCase().includes(this.aCTEUR_PATRIMOINE_REGIONFilter.toLowerCase())) && 
-        (!this.rESPONSABLE_SITEFilter || obj.rESPONSABLE_SITE.toLowerCase().includes(this.rESPONSABLE_SITEFilter.toLowerCase())) && 
-        (!this.aVANCEMENTFilter || obj.aVANCEMENT.toLowerCase().includes(this.aVANCEMENTFilter.toLowerCase())) && 
-        (!this.pORTEUR_PROSPECTIONFilter || obj.pORTEUR_PROSPECTION.toLowerCase().includes(this.pORTEUR_PROSPECTIONFilter.toLowerCase())) && 
-        (!this.bAILLEURFilter || obj.bAILLEUR.toLowerCase().includes(this.bAILLEURFilter.toLowerCase())) && 
-        (!this.pROGRAMMEFilter || obj.pROGRAMME.toLowerCase().includes(this.pROGRAMMEFilter.toLowerCase())) && 
-        (!this.pROJETFilter || obj.pROJET.toLowerCase().includes(this.pROJETFilter.toLowerCase())) && 
-        (!this.tYPE_DE_SUPPORT_PROSPECT_RETENUFilter || obj.tYPE_DE_SUPPORT_PROSPECT_RETENU.toLowerCase().includes(this.tYPE_DE_SUPPORT_PROSPECT_RETENUFilter.toLowerCase())) && 
-        (!this.uO_FibreFilter || obj.uO_Fibre.toLowerCase().includes(this.uO_FibreFilter.toLowerCase())) && 
-        (!this.statut_UO_FibreFilter || obj.statut_UO_Fibre.toLowerCase().includes(this.statut_UO_FibreFilter.toLowerCase())) && 
-        (!this.projet_FibreFilter || obj.projet_Fibre.toLowerCase().includes(this.projet_FibreFilter.toLowerCase())) && 
-        (!this.date_previsionnelle_de_fin_UO_FibreFilter || obj.date_previsionnelle_de_fin_UO_Fibre.toLowerCase().includes(this.date_previsionnelle_de_fin_UO_FibreFilter.toLowerCase())) && 
-        (!this.rEMONTEE_DE_PROSPECTSFilter || obj.rEMONTEE_DE_PROSPECTS.toLowerCase().includes(this.rEMONTEE_DE_PROSPECTSFilter.toLowerCase())) && 
-        (!this.aVIS_RADIOFilter || obj.aVIS_RADIO.toLowerCase().includes(this.aVIS_RADIOFilter.toLowerCase())) && 
-        (!this.aRBITRAGE_PROSPECTFilter || obj.aRBITRAGE_PROSPECT.toLowerCase().includes(this.aRBITRAGE_PROSPECTFilter.toLowerCase())) && 
-        (!this.aVIS_TRANSFilter || obj.aVIS_TRANS.toLowerCase().includes(this.aVIS_TRANSFilter.toLowerCase())) && 
-        (!this.aCCORD_DE_PRINCIPEFilter || obj.aCCORD_DE_PRINCIPE.toLowerCase().includes(this.aCCORD_DE_PRINCIPEFilter.toLowerCase())) && 
-        (!this.vTFilter || obj.vT.toLowerCase().includes(this.vTFilter.toLowerCase())) && 
-        (!this.cOMITE_SITE_NEUFFilter || obj.cOMITE_SITE_NEUF.toLowerCase().includes(this.cOMITE_SITE_NEUFFilter.toLowerCase())) && 
-        (!this.cHOIX_PROSPECTFilter || obj.cHOIX_PROSPECT.toLowerCase().includes(this.cHOIX_PROSPECTFilter.toLowerCase())) && 
-        (!this.eNVOI_EBFilter || obj.eNVOI_EB.toLowerCase().includes(this.eNVOI_EBFilter.toLowerCase())) && 
-        (!this.rEPONSE_EBSFilter || obj.rEPONSE_EBS.toLowerCase().includes(this.rEPONSE_EBSFilter.toLowerCase())) && 
-        (!this.rEDACTION_DTBFilter || obj.rEDACTION_DTB.toLowerCase().includes(this.rEDACTION_DTBFilter.toLowerCase())) && 
-        (!this.vALIDATION_DTBFilter || obj.vALIDATION_DTB.toLowerCase().includes(this.vALIDATION_DTBFilter.toLowerCase())) && 
-        (!this.dEVIS_TSFilter || obj.dEVIS_TS.toLowerCase().includes(this.dEVIS_TSFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_DEVIS_TSFilter || obj.date_planifiee_confirmee_DEVIS_TS.toLowerCase().includes(this.date_planifiee_confirmee_DEVIS_TSFilter.toLowerCase())) && 
-        (!this.dOSSIER_INFORMATION_MAIRIEFilter || obj.dOSSIER_INFORMATION_MAIRIE.toLowerCase().includes(this.dOSSIER_INFORMATION_MAIRIEFilter.toLowerCase())) && 
-        (!this.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter || obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE.toLowerCase().includes(this.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter.toLowerCase())) && 
-        (!this.dEPOT_ADMINFilter || obj.dEPOT_ADMIN.toLowerCase().includes(this.dEPOT_ADMINFilter.toLowerCase())) && 
-        (!this.date_de_Real_DEPOT_ADMINFilter || obj.date_de_Real_DEPOT_ADMIN.toLowerCase().includes(this.date_de_Real_DEPOT_ADMINFilter.toLowerCase())) && 
-        (!this.aUTO_ADMINFilter || obj.aUTO_ADMIN.toLowerCase().includes(this.aUTO_ADMINFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_AUTO_ADMINFilter || obj.date_planifiee_confirmee_AUTO_ADMIN.toLowerCase().includes(this.date_planifiee_confirmee_AUTO_ADMINFilter.toLowerCase())) && 
-        (!this.cONTAINER_HW_RadioFilter || obj.cONTAINER_HW_Radio.toLowerCase().includes(this.cONTAINER_HW_RadioFilter.toLowerCase())) && 
-        (!this.cONTAINER_HW_AntenneFilter || obj.cONTAINER_HW_Antenne.toLowerCase().includes(this.cONTAINER_HW_AntenneFilter.toLowerCase())) && 
-        (!this.cONTAINER_HW_FHFilter || obj.cONTAINER_HW_FH.toLowerCase().includes(this.cONTAINER_HW_FHFilter.toLowerCase())) && 
-        (!this.dEMANDE_ENEDISFilter || obj.dEMANDE_ENEDIS.toLowerCase().includes(this.dEMANDE_ENEDISFilter.toLowerCase())) && 
-        (!this.dEVIS_ENEDISFilter || obj.dEVIS_ENEDIS.toLowerCase().includes(this.dEVIS_ENEDISFilter.toLowerCase())) && 
-        (!this.sIGNATURE_CONVENTIONFilter || obj.sIGNATURE_CONVENTION.toLowerCase().includes(this.sIGNATURE_CONVENTIONFilter.toLowerCase())) && 
-        (!this.gO_REALISATIONFilter || obj.gO_REALISATION.toLowerCase().includes(this.gO_REALISATIONFilter.toLowerCase())) && 
-        (!this.date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter || obj.date_de_Realisation_Jalon_ARA_GO_REALISATION.toLowerCase().includes(this.date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_GO_REALISATIONFilter || obj.date_planifiee_confirmee_GO_REALISATION.toLowerCase().includes(this.date_planifiee_confirmee_GO_REALISATIONFilter.toLowerCase())) && 
-        (!this.mAD_INFRAFilter || obj.mAD_INFRA.toLowerCase().includes(this.mAD_INFRAFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_MAD_INFRAFilter || obj.date_planifiee_confirmee_MAD_INFRA.toLowerCase().includes(this.date_planifiee_confirmee_MAD_INFRAFilter.toLowerCase())) && 
-        (!this.mAD_ENEDIS_DEFINITIFFilter || obj.mAD_ENEDIS_DEFINITIF.toLowerCase().includes(this.mAD_ENEDIS_DEFINITIFFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter || obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF.toLowerCase().includes(this.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter.toLowerCase())) && 
-        (!this.mESFilter || obj.mES.toLowerCase().includes(this.mESFilter.toLowerCase())) && 
-        (!this.date_planifiee_confirmee_MESFilter || obj.date_planifiee_confirmee_MES.toLowerCase().includes(this.date_planifiee_confirmee_MESFilter.toLowerCase())) && 
-        (!this.rECETTEFilter || obj.rECETTE.toLowerCase().includes(this.rECETTEFilter.toLowerCase())) && 
-        (!this.pARFAIT_ACHEVEMENTFilter || obj.pARFAIT_ACHEVEMENT.toLowerCase().includes(this.pARFAIT_ACHEVEMENTFilter.toLowerCase())) && 
-        (!this.date_antenneFilter || obj.date_antenne.toLowerCase().includes(this.date_antenneFilter.toLowerCase())) 
+        (!this.dEPTFilter || (this.dEPTFilter && obj.dEPT && obj.dEPT.toLowerCase().includes(this.dEPTFilter.toLowerCase()) ) ) && 
+        (!this.g2RFilter || (this.g2RFilter && obj.g2R && obj.g2R.toLowerCase().includes(this.g2RFilter.toLowerCase()) ) ) && 
+        (!this.nom_SiteFilter || (this.nom_SiteFilter && obj.nom_Site && obj.nom_Site.toLowerCase().includes(this.nom_SiteFilter.toLowerCase()) ) ) && 
+        (!this.uOFilter || (this.uOFilter && obj.uO && obj.uO.toLowerCase().includes(this.uOFilter.toLowerCase()) ) ) && 
+        (!this.sTATUT_UOFilter || (this.sTATUT_UOFilter && obj.sTATUT_UO && obj.sTATUT_UO.toLowerCase().includes(this.sTATUT_UOFilter.toLowerCase()) ) ) && 
+        (!this.cdP_Planif_DSORFilter || (this.cdP_Planif_DSORFilter && obj.cdP_Planif_DSOR && obj.cdP_Planif_DSOR.toLowerCase().includes(this.cdP_Planif_DSORFilter.toLowerCase()) ) ) && 
+        (!this.aCTEUR_PATRIMOINE_REGIONFilter || (this.aCTEUR_PATRIMOINE_REGIONFilter && obj.aCTEUR_PATRIMOINE_REGION && obj.aCTEUR_PATRIMOINE_REGION.toLowerCase().includes(this.aCTEUR_PATRIMOINE_REGIONFilter.toLowerCase()) ) ) && 
+        (!this.rESPONSABLE_SITEFilter || (this.rESPONSABLE_SITEFilter && obj.rESPONSABLE_SITE && obj.rESPONSABLE_SITE.toLowerCase().includes(this.rESPONSABLE_SITEFilter.toLowerCase()) ) ) && 
+        (!this.aVANCEMENTFilter || (this.aVANCEMENTFilter && obj.aVANCEMENT && obj.aVANCEMENT.toLowerCase().includes(this.aVANCEMENTFilter.toLowerCase()) ) ) && 
+        (!this.pORTEUR_PROSPECTIONFilter || (this.pORTEUR_PROSPECTIONFilter && obj.pORTEUR_PROSPECTION && obj.pORTEUR_PROSPECTION.toLowerCase().includes(this.pORTEUR_PROSPECTIONFilter.toLowerCase()) ) ) && 
+        (!this.bAILLEURFilter || (this.bAILLEURFilter && obj.bAILLEUR && obj.bAILLEUR.toLowerCase().includes(this.bAILLEURFilter.toLowerCase()) ) ) && 
+        (!this.pROGRAMMEFilter || (this.pROGRAMMEFilter && obj.pROGRAMME && obj.pROGRAMME.toLowerCase().includes(this.pROGRAMMEFilter.toLowerCase()) ) ) && 
+        (!this.pROJETFilter || (this.pROJETFilter && obj.pROJET && obj.pROJET.toLowerCase().includes(this.pROJETFilter.toLowerCase()) ) ) && 
+        (!this.tYPE_DE_SUPPORT_PROSPECT_RETENUFilter || (this.tYPE_DE_SUPPORT_PROSPECT_RETENUFilter && obj.tYPE_DE_SUPPORT_PROSPECT_RETENU && obj.tYPE_DE_SUPPORT_PROSPECT_RETENU.toLowerCase().includes(this.tYPE_DE_SUPPORT_PROSPECT_RETENUFilter.toLowerCase()) ) ) && 
+        (!this.uO_FibreFilter || (this.uO_FibreFilter && obj.uO_Fibre && obj.uO_Fibre.toLowerCase().includes(this.uO_FibreFilter.toLowerCase()) ) ) && 
+        (!this.statut_UO_FibreFilter || (this.statut_UO_FibreFilter && obj.statut_UO_Fibre && obj.statut_UO_Fibre.toLowerCase().includes(this.statut_UO_FibreFilter.toLowerCase()) ) ) && 
+        (!this.projet_FibreFilter || (this.projet_FibreFilter && obj.projet_Fibre && obj.projet_Fibre.toLowerCase().includes(this.projet_FibreFilter.toLowerCase()) ) ) && 
+        (!this.date_previsionnelle_de_fin_UO_FibreFilter || (this.date_previsionnelle_de_fin_UO_FibreFilter && obj.date_previsionnelle_de_fin_UO_Fibre && obj.date_previsionnelle_de_fin_UO_Fibre.toLowerCase().includes(this.date_previsionnelle_de_fin_UO_FibreFilter.toLowerCase()) ) ) && 
+        (!this.rEMONTEE_DE_PROSPECTSFilter || (this.rEMONTEE_DE_PROSPECTSFilter && obj.rEMONTEE_DE_PROSPECTS && obj.rEMONTEE_DE_PROSPECTS.toLowerCase().includes(this.rEMONTEE_DE_PROSPECTSFilter.toLowerCase()) ) ) && 
+        (!this.aVIS_RADIOFilter || (this.aVIS_RADIOFilter && obj.aVIS_RADIO && obj.aVIS_RADIO.toLowerCase().includes(this.aVIS_RADIOFilter.toLowerCase()) ) ) && 
+        (!this.aRBITRAGE_PROSPECTFilter || (this.aRBITRAGE_PROSPECTFilter && obj.aRBITRAGE_PROSPECT && obj.aRBITRAGE_PROSPECT.toLowerCase().includes(this.aRBITRAGE_PROSPECTFilter.toLowerCase()) ) ) && 
+        (!this.aVIS_TRANSFilter || (this.aVIS_TRANSFilter && obj.aVIS_TRANS && obj.aVIS_TRANS.toLowerCase().includes(this.aVIS_TRANSFilter.toLowerCase()) ) ) && 
+        (!this.aCCORD_DE_PRINCIPEFilter || (this.aCCORD_DE_PRINCIPEFilter && obj.aCCORD_DE_PRINCIPE && obj.aCCORD_DE_PRINCIPE.toLowerCase().includes(this.aCCORD_DE_PRINCIPEFilter.toLowerCase()) ) ) && 
+        (!this.vTFilter || (this.vTFilter && obj.vT && obj.vT.toLowerCase().includes(this.vTFilter.toLowerCase()) ) ) && 
+        (!this.cOMITE_SITE_NEUFFilter || (this.cOMITE_SITE_NEUFFilter && obj.cOMITE_SITE_NEUF && obj.cOMITE_SITE_NEUF.toLowerCase().includes(this.cOMITE_SITE_NEUFFilter.toLowerCase()) ) ) && 
+        (!this.cHOIX_PROSPECTFilter || (this.cHOIX_PROSPECTFilter && obj.cHOIX_PROSPECT && obj.cHOIX_PROSPECT.toLowerCase().includes(this.cHOIX_PROSPECTFilter.toLowerCase()) ) ) && 
+        (!this.eNVOI_EBFilter || (this.eNVOI_EBFilter && obj.eNVOI_EB && obj.eNVOI_EB.toLowerCase().includes(this.eNVOI_EBFilter.toLowerCase()) ) ) && 
+        (!this.rEPONSE_EBSFilter || (this.rEPONSE_EBSFilter && obj.rEPONSE_EBS && obj.rEPONSE_EBS.toLowerCase().includes(this.rEPONSE_EBSFilter.toLowerCase()) ) ) && 
+        (!this.rEDACTION_DTBFilter || (this.rEDACTION_DTBFilter && obj.rEDACTION_DTB && obj.rEDACTION_DTB.toLowerCase().includes(this.rEDACTION_DTBFilter.toLowerCase()) ) ) && 
+        (!this.vALIDATION_DTBFilter || (this.vALIDATION_DTBFilter && obj.vALIDATION_DTB && obj.vALIDATION_DTB.toLowerCase().includes(this.vALIDATION_DTBFilter.toLowerCase()) ) ) && 
+        (!this.dEVIS_TSFilter || (this.dEVIS_TSFilter && obj.dEVIS_TS && obj.dEVIS_TS.toLowerCase().includes(this.dEVIS_TSFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_DEVIS_TSFilter || (this.date_planifiee_confirmee_DEVIS_TSFilter && obj.date_planifiee_confirmee_DEVIS_TS && obj.date_planifiee_confirmee_DEVIS_TS.toLowerCase().includes(this.date_planifiee_confirmee_DEVIS_TSFilter.toLowerCase()) ) ) && 
+        (!this.dOSSIER_INFORMATION_MAIRIEFilter || (this.dOSSIER_INFORMATION_MAIRIEFilter && obj.dOSSIER_INFORMATION_MAIRIE && obj.dOSSIER_INFORMATION_MAIRIE.toLowerCase().includes(this.dOSSIER_INFORMATION_MAIRIEFilter.toLowerCase()) ) ) && 
+        (!this.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter || (this.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter && obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE && obj.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIE.toLowerCase().includes(this.date_de_Realisation_Jalon_ARA_DOSSIER_INFORMATION_MAIRIEFilter.toLowerCase()) ) ) && 
+        (!this.dEPOT_ADMINFilter || (this.dEPOT_ADMINFilter && obj.dEPOT_ADMIN && obj.dEPOT_ADMIN.toLowerCase().includes(this.dEPOT_ADMINFilter.toLowerCase()) ) ) && 
+        (!this.date_de_Real_DEPOT_ADMINFilter || (this.date_de_Real_DEPOT_ADMINFilter && obj.date_de_Real_DEPOT_ADMIN && obj.date_de_Real_DEPOT_ADMIN.toLowerCase().includes(this.date_de_Real_DEPOT_ADMINFilter.toLowerCase()) ) ) && 
+        (!this.aUTO_ADMINFilter || (this.aUTO_ADMINFilter && obj.aUTO_ADMIN && obj.aUTO_ADMIN.toLowerCase().includes(this.aUTO_ADMINFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_AUTO_ADMINFilter || (this.date_planifiee_confirmee_AUTO_ADMINFilter && obj.date_planifiee_confirmee_AUTO_ADMIN && obj.date_planifiee_confirmee_AUTO_ADMIN.toLowerCase().includes(this.date_planifiee_confirmee_AUTO_ADMINFilter.toLowerCase()) ) ) && 
+        (!this.cONTAINER_HW_RadioFilter || (this.cONTAINER_HW_RadioFilter && obj.cONTAINER_HW_Radio && obj.cONTAINER_HW_Radio.toLowerCase().includes(this.cONTAINER_HW_RadioFilter.toLowerCase()) ) ) && 
+        (!this.cONTAINER_HW_AntenneFilter || (this.cONTAINER_HW_AntenneFilter && obj.cONTAINER_HW_Antenne && obj.cONTAINER_HW_Antenne.toLowerCase().includes(this.cONTAINER_HW_AntenneFilter.toLowerCase()) ) ) && 
+        (!this.cONTAINER_HW_FHFilter || (this.cONTAINER_HW_FHFilter && obj.cONTAINER_HW_FH && obj.cONTAINER_HW_FH.toLowerCase().includes(this.cONTAINER_HW_FHFilter.toLowerCase()) ) ) && 
+        (!this.dEMANDE_ENEDISFilter || (this.dEMANDE_ENEDISFilter && obj.dEMANDE_ENEDIS && obj.dEMANDE_ENEDIS.toLowerCase().includes(this.dEMANDE_ENEDISFilter.toLowerCase()) ) ) && 
+        (!this.dEVIS_ENEDISFilter || (this.dEVIS_ENEDISFilter && obj.dEVIS_ENEDIS && obj.dEVIS_ENEDIS.toLowerCase().includes(this.dEVIS_ENEDISFilter.toLowerCase()) ) ) && 
+        (!this.sIGNATURE_CONVENTIONFilter || (this.sIGNATURE_CONVENTIONFilter && obj.sIGNATURE_CONVENTION && obj.sIGNATURE_CONVENTION.toLowerCase().includes(this.sIGNATURE_CONVENTIONFilter.toLowerCase()) ) ) && 
+        (!this.gO_REALISATIONFilter || (this.gO_REALISATIONFilter && obj.gO_REALISATION && obj.gO_REALISATION.toLowerCase().includes(this.gO_REALISATIONFilter.toLowerCase()) ) ) && 
+        (!this.date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter || (this.date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter && obj.date_de_Realisation_Jalon_ARA_GO_REALISATION && obj.date_de_Realisation_Jalon_ARA_GO_REALISATION.toLowerCase().includes(this.date_de_Realisation_Jalon_ARA_GO_REALISATIONFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_GO_REALISATIONFilter || (this.date_planifiee_confirmee_GO_REALISATIONFilter && obj.date_planifiee_confirmee_GO_REALISATION && obj.date_planifiee_confirmee_GO_REALISATION.toLowerCase().includes(this.date_planifiee_confirmee_GO_REALISATIONFilter.toLowerCase()) ) ) && 
+        (!this.mAD_INFRAFilter || (this.mAD_INFRAFilter && obj.mAD_INFRA && obj.mAD_INFRA.toLowerCase().includes(this.mAD_INFRAFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_MAD_INFRAFilter || (this.date_planifiee_confirmee_MAD_INFRAFilter && obj.date_planifiee_confirmee_MAD_INFRA && obj.date_planifiee_confirmee_MAD_INFRA.toLowerCase().includes(this.date_planifiee_confirmee_MAD_INFRAFilter.toLowerCase()) ) ) && 
+        (!this.mAD_ENEDIS_DEFINITIFFilter || (this.mAD_ENEDIS_DEFINITIFFilter && obj.mAD_ENEDIS_DEFINITIF && obj.mAD_ENEDIS_DEFINITIF.toLowerCase().includes(this.mAD_ENEDIS_DEFINITIFFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter || (this.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter && obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF && obj.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIF.toLowerCase().includes(this.date_planifiee_confirmee_MAD_ENEDIS_DEFINITIFFilter.toLowerCase()) ) ) && 
+        (!this.mESFilter || (this.mESFilter && obj.mES && obj.mES.toLowerCase().includes(this.mESFilter.toLowerCase()) ) ) && 
+        (!this.date_planifiee_confirmee_MESFilter || (this.date_planifiee_confirmee_MESFilter && obj.date_planifiee_confirmee_MES && obj.date_planifiee_confirmee_MES.toLowerCase().includes(this.date_planifiee_confirmee_MESFilter.toLowerCase()) ) ) && 
+        (!this.rECETTEFilter || (this.rECETTEFilter && obj.rECETTE && obj.rECETTE.toLowerCase().includes(this.rECETTEFilter.toLowerCase()) ) ) && 
+        (!this.pARFAIT_ACHEVEMENTFilter || (this.pARFAIT_ACHEVEMENTFilter && obj.pARFAIT_ACHEVEMENT && obj.pARFAIT_ACHEVEMENT.toLowerCase().includes(this.pARFAIT_ACHEVEMENTFilter.toLowerCase()) ) ) && 
+        (!this.date_antenneFilter || (this.date_antenneFilter && obj.date_antenne && obj.date_antenne.toLowerCase().includes(this.date_antenneFilter.toLowerCase()) ) ) 
       );
   });
 }
@@ -463,9 +508,16 @@ closeFormEdit() {
   this.isShowForm = false
 }
 
+onRowClick(obj: any, index: number): void {
+  console.log('Objet sélectionné:', obj);
+  console.log('Indice:', index);
+  
+  this.editObj(index)
+}
+
 // Fonction pour éditer un utilisateur
 editObj(index: number) {
-  this.isShowForm = true
+  this.isShowForm = true  
   this.editingIndex = index;
   this.currentObj = { ...this.filteredList[index] };  // Cloner les données de l'utilisateur sélectionné
   // if (this.currentObj.dateNaiss) {
@@ -473,26 +525,36 @@ editObj(index: number) {
   // }
 }
 
-initObj() {
-  this.isShowForm = true
-  this.currentObj = this.getObjInit();
-  this.editingIndex = null;
+deleteCurrentObj() {
+
+  this.deleteObj(this.editingIndex ? this.editingIndex : -1)
+
 }
 
 deleteObj(index: number) {
-  const currentObj = this.filteredList[index]
+  if(index < 0) return 
+
+  this.currentObj = this.filteredList[index]
 
   const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
-      this.myService.deleteById(currentObj).subscribe(
-        () => this.findAll(),
+      this.myService.deleteById(this.currentObj).subscribe(
+        () => {
+          this.findAll()
+        },
         error => console.error('Error deleting user', error)
       );
     }
   });
 
+}
+
+initObj() {
+  this.isShowForm = true
+  this.currentObj = this.getObjInit();
+  this.editingIndex = null;
 }
 
 saveObj() {
@@ -655,19 +717,43 @@ onFileChange(event: any) {
       console.error('Error purgeAndSave', error1)
     }
   );
+}
 
+getDurationMnSs(startTime : Date) : string {
+  const endTime = new Date(); // Capture la fin
+  const durationMs = endTime.getTime() - startTime.getTime(); // Temps en ms
 
+  const minutes = Math.floor(durationMs / 60000); // Convertir en minutes
+  const seconds = Math.floor((durationMs % 60000) / 1000); // Récupérer les secondes restantes
+  return minutes + " min " + seconds + " sec"; // Formater l'information
 }
 
 importerInServer() {
-  console.log("importerInServer : modeIncremental, myList : ", new Date(), this.modeIncremental, this.myList)
-  this.myService.importer(this.myList, this.modeIncremental, false).subscribe(data => {
-    console.log("importerInServer : data : ", data)
-  },
-    error => {
-      console.error('Error importer', error)
-    }
-  );
+  
+  let startDate = new Date(); // Capture le début
+
+  this.infos = ""
+  this.infos = "import en cours ... a : " + this.util.dateToString(startDate)
+
+  console.log("importerInServer : modeIncremental, myList : ", startDate, this.modeIncremental, this.myList);
+
+  setTimeout(() => {
+
+    this.myService.importer(this.myList, this.modeIncremental, false).subscribe(
+      data => {
+
+        this.infos = "import en : " + this.util.getDurationMnSs(startDate)
+
+        console.log("importerInServer : data : ", data);
+        console.log("Temps d'exécution : ", this.infos);
+      },
+      error => {
+        console.error('Error importer', error);
+        this.infos = 'Error importer' + error
+      }
+    );
+
+  }, 0);
 }
 
 validateHeaders(expectedHeaders: string[], headers: string[]): boolean {
